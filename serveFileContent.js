@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { type } = require("os");
 
 const contentType = {
   html: 'text/html',
@@ -17,10 +16,6 @@ const serveFileContent = (request, response, serveFrom = './public') => {
   const fileName = `${serveFrom}${request.path}`;
   if (!fs.existsSync(fileName)) {
     return false;
-  }
-
-  if (request.path === '/Abeliophyllum.pdf') {
-    response.setHeader('content-type', determineContentType(fileName));
   }
 
   response.setHeader('content-type', determineContentType(fileName));
