@@ -6,11 +6,23 @@ const fileNotFound = (request, response) => {
   return true;
 };
 
+const addCommentToRequest = (comments) => {
+  return (request, response) => {
+    request.comments = comments;
+    return false;
+  }
+};
+
+const readPriviousComment = (fileName) => {
+  const comments = JSON.parse(fs.readFileSync(fileName, 'utf-8'));
+  return addCommentToRequest(comments);
+};
+
 const formatComment = ({ name, date, comment }) => {
   comment = comment.replaceAll('+', ' ');
   console.log(name, date, comment);
   return `<div>${date} ${name} ${comment}</div>`;
-}
+};
 
 const getAllComments = (comments) => {
   let commentsAsString = '';
@@ -18,15 +30,9 @@ const getAllComments = (comments) => {
     commentsAsString += formatComment(comment);
   })
   return commentsAsString;
-}
+};
 
-const writeComments = (commentString) => {
-  let template = fs.readFileSync('public/template.html', 'utf-8');
-  template = template.replace('__Comments__', commentString);
-  fs.writeFileSync('public/guest-book.html', template, 'utf8');
-}
-
-const addComment = (request, response, comments) => {
+const addComment = (request) => {
   const { name, comment } = request.queryParams;
   const date = new Date();
   const newComment = {
@@ -34,21 +40,34 @@ const addComment = (request, response, comments) => {
     comment: comment,
     date: date.toString()
   }
-  comments.unshift(newComment);
-  fs.writeFileSync('comment.json', JSON.stringify(comments), "utf-8");
-}
-
-const addCommentHandler = () => {
-  const comments = JSON.parse(fs.readFileSync('./comment.json', 'utf8'));
-  return (request, response) => {
-    addComment(request, response, comments);
-    const commentString = getAllComments(comments);
-    writeComments(commentString);
-    response.statusCode = 302;
-    response.setHeader('location', 'guest-book.html');
-    response.send('hello');
-    return true;
-  };
+  request.comments.unshift(newComment);
+  // fs.writeFileSync('comment.json', JSON.stringify(request.comments), "utf-8");
 };
 
-module.exports = { fileNotFound, addCommentHandler };
+const showComments = (request, response) => {
+  const commentString = getAllComments(request.comments);
+  let template = fs.readFileSync('public/template.html', 'utf-8');
+  template = template.replace('__Comments__', commentString);
+  fs.writeFileSync('public/guest-book.html', template, 'utf8');
+};
+
+const redirectTo = (location) => {
+  response.statusCode = 302;
+  response.setHeader('location', location);
+  response.send('hello');
+};
+
+const addCommentHandler = (request, response) => {
+  const { name, comment } = request.queryParams;
+  if (!(name && comment)) {
+    return false;
+  }
+
+  addComment(request);
+  showComments(request, response);
+  redirectTo('./guest-book.html');
+  return true;
+};
+
+
+module.exports = { fileNotFound, addCommentHandler, readPriviousComment };

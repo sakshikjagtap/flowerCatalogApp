@@ -4,6 +4,8 @@
 
 **DONE**
 
+- [x] add privious commit to request
+- [x] Refactor addCommentHandler
 - [x] show date in format
 - [x] Connect guest-book with server
 - [x] Create handler for adding comment
