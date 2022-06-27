@@ -4,6 +4,7 @@
 
 **DONE**
 
+- [x] show date in format
 - [x] Connect guest-book with server
 - [x] Create handler for adding comment
 - [x] Move styles to style.css

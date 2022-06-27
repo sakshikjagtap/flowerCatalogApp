@@ -12,8 +12,12 @@ const determineContentType = (fileName) => {
   return contentType[extension] || 'text/plain';
 };
 
-const serveFileContent = (request, response, serveFrom = './public') => {
-  const fileName = `${serveFrom}${request.path}`;
+const serveFileContent = (request, response) => {
+  let fileName = `./public${request.path}`;
+  if (request.path === '/') {
+    fileName = './public/index.html';
+  }
+
   if (!fs.existsSync(fileName)) {
     return false;
   }

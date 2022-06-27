@@ -9,6 +9,7 @@ const fileNotFound = (request, response) => {
 const comments = [];
 
 const formatComment = ({ name, date, comment }) => {
+  comment = comment.replaceAll('+', ' ');
   console.log(name, date, comment);
   return `<div>${date} ${name} ${comment}</div>`;
 }
@@ -24,7 +25,6 @@ const getAllComments = (comments) => {
 const writeComments = (commentString) => {
   let template = fs.readFileSync('public/template.html', 'utf-8');
   template = template.replace('__Comments__', commentString);
-  template = template.replace('+', ' ');
   fs.writeFileSync('public/guest-book.html', template, 'utf8');
 }
 
