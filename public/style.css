@@ -1,0 +1,14 @@
+h2 {
+  text-align: right;
+  color: orange;
+  border-bottom: 1px solid black;
+  padding-bottom: 10px;
+}
+
+.wrapper {
+  display: flex;
+}
+
+h1 {
+  text-align: center;
+}
