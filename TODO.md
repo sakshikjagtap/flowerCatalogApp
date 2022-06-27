@@ -4,6 +4,8 @@
 
 **DONE**
 
+- [x] Add feature of downloading pdf
+- [x] Change color of headings
 - [x] add privious commit to request
 - [x] Refactor addCommentHandler
 - [x] show date in format
