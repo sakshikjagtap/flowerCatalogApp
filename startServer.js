@@ -15,5 +15,5 @@ const createHandler = (handlers, serveFrom) => {
   };
 };
 
-const handlers = [serveFileContent, addCommentHandler, fileNotFound,];
+const handlers = [serveFileContent, addCommentHandler(), fileNotFound,];
 startServer(9999, createHandler(handlers));
