@@ -1,11 +1,11 @@
 **TODO**
 
 - [ ] add jar gif in index.html
-- [ ] Connect guest-book with server
-
 
 **DONE**
 
+- [x] Connect guest-book with server
+- [x] Create handler for adding comment
 - [x] Move styles to style.css
 - [x] Create Guest book html
 - [x] Create html for flower pages 
