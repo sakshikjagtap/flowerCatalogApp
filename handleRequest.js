@@ -41,7 +41,7 @@ const addComment = (request) => {
     date: date.toString()
   }
   request.comments.unshift(newComment);
-  // fs.writeFileSync('comment.json', JSON.stringify(request.comments), "utf-8");
+  fs.writeFileSync('comment.json', JSON.stringify(request.comments), "utf-8");
 };
 
 const showComments = (request, response) => {
@@ -51,7 +51,7 @@ const showComments = (request, response) => {
   fs.writeFileSync('public/guest-book.html', template, 'utf8');
 };
 
-const redirectTo = (location) => {
+const redirectTo = (response, location) => {
   response.statusCode = 302;
   response.setHeader('location', location);
   response.send('hello');
@@ -65,7 +65,7 @@ const addCommentHandler = (request, response) => {
 
   addComment(request);
   showComments(request, response);
-  redirectTo('./guest-book.html');
+  redirectTo(response, './guest-book.html');
   return true;
 };
 
