@@ -1,9 +1,11 @@
 **TODO**
 
-- [ ] add jar gif in index.html
+- [ ] format date
 
 **DONE**
 
+- [x] apply flex on content
+- [x] add jar gif in index.html
 - [x] Add feature of downloading pdf
 - [x] Change color of headings
 - [x] add privious commit to request

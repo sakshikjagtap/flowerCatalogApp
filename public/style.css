@@ -1,8 +1,5 @@
 h2 {
   text-align: right;
-  color: orange;
-  border-bottom: 1px solid black;
-  padding-bottom: 10px;
 }
 
 .wrapper {
@@ -15,4 +12,12 @@ h1 {
 
 header {
   color: orange;
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
