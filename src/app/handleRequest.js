@@ -1,17 +1,5 @@
 const fs = require("fs");
 
-const addCommentToRequest = (comments) => {
-  return (request, response) => {
-    request.comments = comments;
-    return false;
-  }
-};
-
-const readPriviousComment = (fileName) => {
-  const comments = JSON.parse(fs.readFileSync(fileName, 'utf-8'));
-  return addCommentToRequest(comments);
-};
-
 const formatComment = ({ name, date, comment }) => {
   return `<li>${date} ${name} ${comment}</li>`;
 };
@@ -53,17 +41,22 @@ const showComments = (request, response) => {
   return true;
 };
 
-const addCommentHandler = (request, response) => {
-  const { pathname } = request.url;
-  if (pathname === '/comment') {
-    return addComment(request, response);
-  }
+const guestBookHandler = (fileName) => {
+  const comments = JSON.parse(fs.readFileSync(fileName, 'utf-8'));
+  return (request, response) => {
+    const { pathname } = request.url;
+    if (pathname === '/comment') {
+      request.comments = comments;
+      return addComment(request, response);
+    }
 
-  if (pathname === '/guest-book') {
-    return showComments(request, response);
-  }
-  return false;
+    if (pathname === '/guest-book') {
+      request.comments = comments;
+      return showComments(request, response);
+    }
+    return false;
+  };
 };
 
 
-module.exports = { addCommentHandler, readPriviousComment };
+module.exports = { guestBookHandler };
