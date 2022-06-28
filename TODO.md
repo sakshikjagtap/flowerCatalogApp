@@ -1,11 +1,13 @@
 **TODO**
 
-- [ ] format date
 - [ ] Make npm package
-- [ ] Change comments div to list
 
 **DONE**
 
+- [x] format date
+- [x] Changed directory structure
+- [x] Changed server to inbuilt http server
+- [x] Change comments div to list
 - [x] refactore serve file content
 - [x] remove template
 - [x] apply flex on content

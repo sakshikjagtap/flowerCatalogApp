@@ -1,11 +1,5 @@
 const fs = require("fs");
 
-const fileNotFound = (request, response) => {
-  response.statusCode = 404;
-  response.send('unknown');
-  return true;
-};
-
 const addCommentToRequest = (comments) => {
   return (request, response) => {
     request.comments = comments;
@@ -19,9 +13,7 @@ const readPriviousComment = (fileName) => {
 };
 
 const formatComment = ({ name, date, comment }) => {
-  comment = comment.replaceAll('+', ' ');
-  console.log(name, date, comment);
-  return `<li>${date} ${name} ${comment}<li>`;
+  return `<li>${date} ${name} ${comment}</li>`;
 };
 
 const getAllComments = (comments) => {
@@ -32,23 +24,23 @@ const getAllComments = (comments) => {
   return commentsAsString;
 };
 
-const redirectTo = (response, location) => {
-  response.statusCode = 302;
-  response.setHeader('location', location);
-  response.send('');
-};
+const createEntry = (searchParams) => {
+  const entry = {};
+  const params = searchParams.entries();
+  for (const [key, value] of params) {
+    entry[key] = value;
+  }
+  entry.date = new Date().toLocaleString();
+  return entry;
+}
 
 const addComment = (request, response) => {
-  const { name, comment } = request.queryParams;
-  const date = new Date();
-  const newComment = {
-    name: name,
-    comment: comment,
-    date: date.toString()
-  }
-  request.comments.unshift(newComment);
+  const entry = createEntry(request.url.searchParams);
+  request.comments.unshift(entry);
   fs.writeFileSync('comment.json', JSON.stringify(request.comments), "utf-8");
-  redirectTo(response, '/guest-book');
+  response.statusCode = 302;
+  response.setHeader('location', '/guest-book');
+  response.end('');
   return true;
 };
 
@@ -57,21 +49,21 @@ const showComments = (request, response) => {
   let template = fs.readFileSync('public/guest-book.html', 'utf-8');
   template = template.replace('__Comments__', commentString);
   response.setHeader('content-type', 'text/html');
-  response.send(template);
+  response.end(template);
   return true;
 };
 
 const addCommentHandler = (request, response) => {
-  const { path } = request;
-  if (path === '/comment') {
-    addComment(request, response);
+  const { pathname } = request.url;
+  if (pathname === '/comment') {
+    return addComment(request, response);
   }
 
-  if (path === '/guest-book') {
+  if (pathname === '/guest-book') {
     return showComments(request, response);
   }
   return false;
 };
 
 
-module.exports = { fileNotFound, addCommentHandler, readPriviousComment };
+module.exports = { addCommentHandler, readPriviousComment };

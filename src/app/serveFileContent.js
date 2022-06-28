@@ -13,19 +13,19 @@ const determineContentType = (fileName) => {
 };
 
 const serveFileContent = (request, response) => {
-  const { path } = request;
-  if (path === '/') {
+  const { pathname } = request.url;
+  if (pathname === '/') {
     path = '/index.html';
   }
 
-  const fileName = './public' + path;
+  const fileName = './public' + pathname;
   if (!fs.existsSync(fileName)) {
     return false;
   }
 
   response.setHeader('content-type', determineContentType(fileName));
   const content = fs.readFileSync(fileName);
-  response.send(content);
+  response.end(content);
   return true;
 };
 
