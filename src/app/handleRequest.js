@@ -34,7 +34,7 @@ const addComment = (request, response) => {
 
 const showComments = (request, response) => {
   const commentString = getAllComments(request.comments);
-  let template = fs.readFileSync('public/guest-book.html', 'utf-8');
+  let template = fs.readFileSync('src/app/guest-book.html', 'utf-8');
   template = template.replace('__Comments__', commentString);
   response.setHeader('content-type', 'text/html');
   response.end(template);

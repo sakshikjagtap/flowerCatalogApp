@@ -1,10 +1,11 @@
 **TODO**
 
 - [ ] Make npm package
-- [ ] Move guest-book.html to application
+- [ ] Changed directory structure of public directory
 
 **DONE**
 
+- [x] Move guest-book.html to application
 - [x] refactor addCommentHandlers
 - [x] Changed name of addCommentHandler function
 - [x] format date
