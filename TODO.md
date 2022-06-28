@@ -1,9 +1,11 @@
 **TODO**
 
 - [ ] format date
+- [ ] Make npm package
 
 **DONE**
 
+- [x] remove template
 - [x] apply flex on content
 - [x] add jar gif in index.html
 - [x] Add feature of downloading pdf

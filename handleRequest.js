@@ -32,7 +32,13 @@ const getAllComments = (comments) => {
   return commentsAsString;
 };
 
-const addComment = (request) => {
+const redirectTo = (response, location) => {
+  response.statusCode = 302;
+  response.setHeader('location', location);
+  response.send('');
+};
+
+const addComment = (request, response) => {
   const { name, comment } = request.queryParams;
   const date = new Date();
   const newComment = {
@@ -42,31 +48,29 @@ const addComment = (request) => {
   }
   request.comments.unshift(newComment);
   fs.writeFileSync('comment.json', JSON.stringify(request.comments), "utf-8");
+  redirectTo(response, '/guest-book');
+  return true;
 };
 
 const showComments = (request, response) => {
   const commentString = getAllComments(request.comments);
-  let template = fs.readFileSync('public/template.html', 'utf-8');
+  let template = fs.readFileSync('public/guest-book.html', 'utf-8');
   template = template.replace('__Comments__', commentString);
-  fs.writeFileSync('public/guest-book.html', template, 'utf8');
-};
-
-const redirectTo = (response, location) => {
-  response.statusCode = 302;
-  response.setHeader('location', location);
-  response.send('hello');
+  response.setHeader('content-type', 'text/html');
+  response.send(template);
+  return true;
 };
 
 const addCommentHandler = (request, response) => {
-  const { name, comment } = request.queryParams;
-  if (!(name && comment)) {
-    return false;
+  const { path } = request;
+  if (path === '/comment') {
+    addComment(request, response);
   }
 
-  addComment(request);
-  showComments(request, response);
-  redirectTo(response, './guest-book.html');
-  return true;
+  if (path === '/guest-book') {
+    return showComments(request, response);
+  }
+  return false;
 };
 
 
