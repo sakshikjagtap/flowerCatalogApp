@@ -2,9 +2,11 @@
 
 - [ ] format date
 - [ ] Make npm package
+- [ ] Change comments div to list
 
 **DONE**
 
+- [x] refactore serve file content
 - [x] remove template
 - [x] apply flex on content
 - [x] add jar gif in index.html

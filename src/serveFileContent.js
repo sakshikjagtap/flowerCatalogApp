@@ -13,11 +13,12 @@ const determineContentType = (fileName) => {
 };
 
 const serveFileContent = (request, response) => {
-  let fileName = `./public${request.path}`;
-  if (request.path === '/') {
-    fileName = './public/index.html';
+  const { path } = request;
+  if (path === '/') {
+    path = '/index.html';
   }
 
+  const fileName = './public' + path;
   if (!fs.existsSync(fileName)) {
     return false;
   }

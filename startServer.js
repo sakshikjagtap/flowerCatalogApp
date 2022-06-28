@@ -1,7 +1,7 @@
-const { serveFileContent } = require('./serveFileContent.js');
-const { startServer } = require('./server.js');
+const { serveFileContent } = require('./src/serveFileContent.js');
+const { startServer } = require('./src/server.js');
 const { fileNotFound, addCommentHandler, readPriviousComment } =
-  require('./handleRequest.js');
+  require('./src/handleRequest.js');
 
 
 const createHandler = (handlers) => {

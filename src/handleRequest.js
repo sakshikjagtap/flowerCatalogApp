@@ -21,7 +21,7 @@ const readPriviousComment = (fileName) => {
 const formatComment = ({ name, date, comment }) => {
   comment = comment.replaceAll('+', ' ');
   console.log(name, date, comment);
-  return `<div>${date} ${name} ${comment}</div>`;
+  return `<li>${date} ${name} ${comment}<li>`;
 };
 
 const getAllComments = (comments) => {
