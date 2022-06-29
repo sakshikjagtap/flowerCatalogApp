@@ -4,6 +4,8 @@
 
 **DONE**
 
+- [x] Move handlers to handler directory
+- [x] Created app file
 - [x] Changed directory structure of public directory
 - [x] Move guest-book.html to application
 - [x] refactor addCommentHandlers

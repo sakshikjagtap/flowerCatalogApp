@@ -1,13 +1,7 @@
-const router = (handlers) => {
-  return (request, response) => {
-    for (let index = 0; index < handlers.length; index++) {
-      const handler = handlers[index];
-      if (handler(request, response)) {
-        return true;
-      }
-    }
-    return false;
-  };
-};
+const { guestBookHandler } = require('./app/handlers/handleRequest.js');
+const { serveFileContent } = require('./app/handlers/serveFileContent.js');
+const { notFound } = require('./app/handlers/notFound.js');
 
-exports.router = router;
+const handlers = [guestBookHandler('comment.json'), serveFileContent, notFound];
+
+module.exports = { handlers };
