@@ -1,9 +1,15 @@
 **TODO**
 
-- [ ] Make npm package
+
+- [ ] add log handler
+- [ ] create entity guestbook
+- [ ] make handler for parsing searchparams
+
 
 **DONE**
 
+- [x] inject write file function from outside
+- [x] Make npm package
 - [x] Move handlers to handler directory
 - [x] Created app file
 - [x] Changed directory structure of public directory

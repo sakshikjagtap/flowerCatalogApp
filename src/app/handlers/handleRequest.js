@@ -1,7 +1,12 @@
 const fs = require("fs");
+const { request } = require("http");
+
+const generateTag = (tag, content) => {
+  return `<${tag}>${content}</${tag}>`
+}
 
 const formatComment = ({ name, date, comment }) => {
-  return `<li>${date} ${name} ${comment}</li>`;
+  return generateTag('li', `${date} ${name} : ${comment}`);
 };
 
 const getAllComments = (comments) => {
@@ -22,41 +27,51 @@ const createEntry = (searchParams) => {
   return entry;
 }
 
-const addComment = (request, response) => {
-  const entry = createEntry(request.url.searchParams);
-  request.comments.unshift(entry);
-  fs.writeFileSync('comment.json', JSON.stringify(request.comments), "utf-8");
+const storeComments = (fileName) => {
+  return (comments) => {
+    const commentsAsString = JSON.stringify(comments);
+    fs.writeFileSync(fileName, commentsAsString, "utf-8");
+  }
+};
+
+const addCommentHandler = ({ comments, url, storeComments }, response) => {
+  const entry = createEntry(url.searchParams);
+  comments.unshift(entry);
+  storeComments(comments);
   response.statusCode = 302;
   response.setHeader('location', '/guest-book');
   response.end('');
   return true;
 };
 
-const showComments = (request, response) => {
-  const commentString = getAllComments(request.comments);
-  let template = fs.readFileSync('src/app/guest-book.html', 'utf-8');
-  template = template.replace('__Comments__', commentString);
+const showComments = ({ comments, template }, response) => {
+  const commentString = getAllComments(comments);
+  content = template.replace('__Comments__', commentString);
   response.setHeader('content-type', 'text/html');
-  response.end(template);
+  response.end(content);
   return true;
 };
 
-const guestBookHandler = (fileName) => {
-  const comments = JSON.parse(fs.readFileSync(fileName, 'utf-8'));
+const guestBookHandler = (staticFile, guestBook) => {
+  const comments = JSON.parse(fs.readFileSync(staticFile, 'utf-8'));
+  const template = fs.readFileSync(guestBook, 'utf-8');
+  const saveComments = storeComments(staticFile);
+
   return (request, response) => {
-    const { pathname } = request.url;
-    if (pathname === '/comment') {
+
+    if (request.matches('GET', '/comment')) {
       request.comments = comments;
-      return addComment(request, response);
+      request.storeComments = saveComments;
+      return addCommentHandler(request, response);
     }
 
-    if (pathname === '/guest-book') {
+    if (request.matches('GET', '/guest-book')) {
       request.comments = comments;
+      request.template = template;
       return showComments(request, response);
     }
     return false;
   };
 };
-
 
 module.exports = { guestBookHandler };

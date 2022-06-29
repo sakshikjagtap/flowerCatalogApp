@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/sakshikjagtap/flowerCatalogApp/issues"
   },
-  "homepage": "https://github.com/sakshikjagtap/flowerCatalogApp#readme"
+  "homepage": "https://github.com/sakshikjagtap/flowerCatalogApp#readme",
+  "dependencies": {
+    "mime-types": "^2.1.35"
+  }
 }
