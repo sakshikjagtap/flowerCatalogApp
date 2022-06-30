@@ -4,10 +4,12 @@
 - [ ] add log handler
 - [ ] create entity guestbook
 - [ ] make handler for parsing searchparams
+- [ ] make handler for playing audio file
 
 
 **DONE**
 
+- [x] make api for flower catalog
 - [x] inject write file function from outside
 - [x] Make npm package
 - [x] Move handlers to handler directory

@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { request } = require("http");
 
 const generateTag = (tag, content) => {
   return `<${tag}>${content}</${tag}>`
@@ -7,14 +6,6 @@ const generateTag = (tag, content) => {
 
 const formatComment = ({ name, date, comment }) => {
   return generateTag('li', `${date} ${name} : ${comment}`);
-};
-
-const getAllComments = (comments) => {
-  let commentsAsString = '';
-  comments.forEach(comment => {
-    commentsAsString += formatComment(comment);
-  })
-  return commentsAsString;
 };
 
 const createEntry = (searchParams) => {
@@ -34,7 +25,7 @@ const storeComments = (fileName) => {
   }
 };
 
-const addCommentHandler = ({ comments, url, storeComments }, response) => {
+const addComment = ({ comments, url, storeComments }, response) => {
   const entry = createEntry(url.searchParams);
   comments.unshift(entry);
   storeComments(comments);
@@ -42,6 +33,14 @@ const addCommentHandler = ({ comments, url, storeComments }, response) => {
   response.setHeader('location', '/guest-book');
   response.end('');
   return true;
+};
+
+const getAllComments = (comments) => {
+  let commentsAsString = '';
+  comments.forEach(comment => {
+    commentsAsString += formatComment(comment);
+  })
+  return commentsAsString;
 };
 
 const showComments = ({ comments, template }, response) => {
@@ -52,21 +51,18 @@ const showComments = ({ comments, template }, response) => {
   return true;
 };
 
-const guestBookHandler = (staticFile, guestBook) => {
-  const comments = JSON.parse(fs.readFileSync(staticFile, 'utf-8'));
-  const template = fs.readFileSync(guestBook, 'utf-8');
-  const saveComments = storeComments(staticFile);
+const guestBookHandler = (guestBookSrc, guestBookTemplate) => {
+  const template = fs.readFileSync(guestBookTemplate, 'utf-8');
+  const saveComments = storeComments(guestBookSrc);
 
   return (request, response) => {
-
+    const { pathname } = request.url;
     if (request.matches('GET', '/comment')) {
-      request.comments = comments;
       request.storeComments = saveComments;
-      return addCommentHandler(request, response);
+      return addComment(request, response);
     }
 
     if (request.matches('GET', '/guest-book')) {
-      request.comments = comments;
       request.template = template;
       return showComments(request, response);
     }
