@@ -4,11 +4,11 @@
 - [ ] add log handler
 - [ ] create entity guestbook
 - [ ] make handler for parsing searchparams
-- [ ] make handler for playing audio file
 
 
 **DONE**
 
+- [x] make handler for playing audio file
 - [x] show flowers and comment link for /api request
 - [x] make api for flower catalog
 - [x] inject write file function from outside

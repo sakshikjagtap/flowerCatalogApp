@@ -9,10 +9,19 @@ const serveFileContent = (request, response) => {
   }
 
   const fileName = path.join('public', pathname);
+
   try {
     response.setHeader('content-type', mime.lookup(fileName));
-    const content = fs.readFileSync(fileName);
-    response.end(content);
+
+    const readStream = fs.createReadStream(fileName);
+    readStream.on('data', (chunk) => {
+      response.write(chunk);
+    });
+
+    readStream.on('end', () => {
+      response.end('')
+    });
+
   } catch (error) {
     return false;
   }
