@@ -9,6 +9,7 @@
 
 **DONE**
 
+- [x] show flowers and comment link for /api request
 - [x] make api for flower catalog
 - [x] inject write file function from outside
 - [x] Make npm package
