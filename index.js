@@ -1,5 +1,5 @@
 const { startServer } = require('./src/server/server.js');
-const { router } = require('./src/server/router.js');
+const { createRouter } = require('./src/server/router.js');
 const { handlers } = require('./src/app.js');
 
-startServer(9999, router(handlers));
+startServer(9999, createRouter(handlers));

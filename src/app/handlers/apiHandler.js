@@ -31,11 +31,12 @@ const getApi = (request, response) => {
 };
 
 
-const apiHandler = (request, response) => {
+const apiHandler = (request, response, next) => {
   const { pathname } = request.url;
   if (request.method === 'GET' && pathname.startsWith('/api')) {
     return getApi(request, response);
   }
+  next();
 };
 
 module.exports = { apiHandler };

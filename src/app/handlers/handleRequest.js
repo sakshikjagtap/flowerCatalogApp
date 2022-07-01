@@ -8,7 +8,7 @@ const formatComment = ({ name, date, comment }) => {
   return generateTag('li', `${date} ${name} : ${comment}`);
 };
 
-const createEntry = (searchParams) => {
+const parseBodyParams = (searchParams) => {
   const entry = {};
   const params = searchParams.entries();
   for (const [key, value] of params) {
@@ -16,7 +16,7 @@ const createEntry = (searchParams) => {
   }
   entry.date = new Date().toLocaleString();
   return entry;
-}
+};
 
 const storeComments = (fileName) => {
   return (comments) => {
@@ -25,14 +25,12 @@ const storeComments = (fileName) => {
   }
 };
 
-const addComment = ({ comments, url, storeComments }, response) => {
-  const entry = createEntry(url.searchParams);
-  comments.unshift(entry);
+const addComment = ({ comments, bodyParams, storeComments }, response) => {
+  comments.unshift(bodyParams);
   storeComments(comments);
   response.statusCode = 302;
   response.setHeader('location', '/guest-book');
   response.end('');
-  return true;
 };
 
 const getAllComments = (comments) => {
@@ -48,25 +46,35 @@ const showComments = ({ comments, template }, response) => {
   content = template.replace('__Comments__', commentString);
   response.setHeader('content-type', 'text/html');
   response.end(content);
-  return true;
+  return;
 };
 
 const guestBookHandler = (guestBookSrc, guestBookTemplate) => {
   const template = fs.readFileSync(guestBookTemplate, 'utf-8');
-  const saveComments = storeComments(guestBookSrc);
+  const comments = storeComments(guestBookSrc);
 
-  return (request, response) => {
-    const { pathname } = request.url;
-    if (request.matches('GET', '/comment')) {
-      request.storeComments = saveComments;
-      return addComment(request, response);
+  return (request, response, next) => {
+    if (request.matches('POST', '/comment')) {
+      let body = '';
+      request.storeComments = comments;
+
+      request.on('data', (chunk) => {
+        body += chunk;
+      })
+
+      request.on('end', () => {
+        const bodyParams = new URLSearchParams(body);
+        request.bodyParams = parseBodyParams(bodyParams);
+        addComment(request, response);
+      });
+      return;
     }
 
     if (request.matches('GET', '/guest-book')) {
       request.template = template;
       return showComments(request, response);
     }
-    return false;
+    next();
   };
 };
 
