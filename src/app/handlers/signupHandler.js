@@ -1,29 +1,28 @@
-const fs = require('fs');
+const { redirectTo } = require('./loginHandler');
+
+const addUser = (req, res, users) => {
+  const { username, password } = req.bodyParams;
+  if (!username && !password) {
+    return;
+  }
+  users[username] = { username, password };
+  return;
+};
 
 const signupHandler = (users) => {
   return (req, res, next) => {
-    const { pathname } = req.url;
-    const signupPage = fs.readFileSync('public/signup.html', 'utf-8');
-    if (pathname !== '/signup') {
-      next();
+
+    if (req.matches('GET', '/signup')) {
+      redirectTo(res, '/signup.html')
       return;
     }
 
-    if (req.method === 'GET') {
-      res.end(signupPage);
+    if (req.matches('POST', '/signup')) {
+      addUser(req, res, users);
+      redirectTo(res, '/guest-book');
       return;
     }
-
-    if (req.method === 'POST') {
-      const { username, password } = req.bodyParams;
-      if (username && password) {
-        users[username] = { username, password };
-        res.statusCode = 302;
-        res.setHeader('location', '/guest-book');
-        res.end();
-        return;
-      }
-    }
+    next();
   };
 };
 

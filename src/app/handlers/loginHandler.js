@@ -1,5 +1,11 @@
 const fs = require('fs');
 
+const redirectTo = (res, location) => {
+  res.statusCode = 302;
+  res.setHeader('location', location);
+  res.end();
+}
+
 const isvalidUser = (username, password, users) => {
   const user = users[username];
 
@@ -25,12 +31,11 @@ const createSession = (req, res, sessions) => {
 const loginHandler = (sessions, users) => {
   return (req, res, next) => {
     const { pathname } = req.url;
-    const loginPage = fs.readFileSync('public/login.html', 'utf-8');
     const { cookie } = req.headers;
 
     if (pathname === '/guest-book') {
       if (!cookie && req.method === 'GET') {
-        res.end(loginPage);
+        redirectTo(res, '/login.html');
         return;
       }
     }
@@ -39,18 +44,14 @@ const loginHandler = (sessions, users) => {
     if (req.method === 'POST' && pathname === '/login') {
       if (isvalidUser(username, password, users)) {
         createSession(req, res, sessions);
-        res.statusCode = 302;
-        res.setHeader('location', '/guest-book');
-        res.end();
+        redirectTo(res, 'guest-book');
         return;
       }
-      if (!isvalidUser(username, password, users)) {
-        res.end(loginPage);
-        return;
-      }
+      redirectTo(res, '/login');
+      return;
     }
     next();
   };
 };
 
-module.exports = { loginHandler };
+module.exports = { loginHandler, redirectTo };
