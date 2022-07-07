@@ -3,6 +3,13 @@
 <head>
   <title>Flower Catalog</title>
   <link rel="stylesheet" href="css/style.css">
+  <script>
+    const hide = () => {
+      const gif = document.getElementById('flower-gif');
+      gif.style.display = 'none';
+      setTimeout(() => gif.style.display = 'inline', 1000);
+    }
+  </script>
 </head>
 
 <body>
@@ -19,7 +26,7 @@
         <li><a href="Abeliophyllum.html">Abeliophyllum</a></li>
         <li><a href="agerantum.html">agerantum</a></li>
       </ul>
-      <img src="images/animated-flower-image-0021.gif" alt="animated-flower-image">
+      <img id="flower-gif" src="images/animated-flower-image-0021.gif" alt="animated-flower-image" onclick="hide()">
       <a href="guest-book">Guest-book</a>
     </div>
 

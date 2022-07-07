@@ -8,16 +8,6 @@ const formatComment = ({ name, date, comment }) => {
   return generateTag('li', `${date} ${name} : ${comment}`);
 };
 
-const parseBodyParams = (searchParams) => {
-  const entry = {};
-  const params = searchParams.entries();
-  for (const [key, value] of params) {
-    entry[key] = value;
-  }
-  entry.date = new Date().toLocaleString();
-  return entry;
-};
-
 const storeComments = (fileName) => {
   return (comments) => {
     const commentsAsString = JSON.stringify(comments);
@@ -26,6 +16,7 @@ const storeComments = (fileName) => {
 };
 
 const addComment = ({ comments, bodyParams, storeComments }, response) => {
+  bodyParams.date = new Date().toLocaleString();
   comments.unshift(bodyParams);
   storeComments(comments);
   response.statusCode = 302;
@@ -55,18 +46,8 @@ const guestBookHandler = (guestBookSrc, guestBookTemplate) => {
 
   return (request, response, next) => {
     if (request.matches('POST', '/comment')) {
-      let body = '';
       request.storeComments = comments;
-
-      request.on('data', (chunk) => {
-        body += chunk;
-      })
-
-      request.on('end', () => {
-        const bodyParams = new URLSearchParams(body);
-        request.bodyParams = parseBodyParams(bodyParams);
-        addComment(request, response);
-      });
+      addComment(request, response);
       return;
     }
 
