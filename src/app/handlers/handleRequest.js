@@ -16,12 +16,17 @@ const storeComments = (fileName) => {
 };
 
 const addComment = ({ comments, bodyParams, storeComments }, response) => {
-  bodyParams.date = new Date().toLocaleString();
-  comments.unshift(bodyParams);
-  storeComments(comments);
-  response.statusCode = 302;
-  response.setHeader('location', '/guest-book');
-  response.end('');
+  const { name, comment } = bodyParams
+  if (name && comment) {
+    bodyParams.date = new Date().toLocaleString();
+    comments.unshift(bodyParams);
+    storeComments(comments);
+    response.statusCode = 200;
+    response.end(JSON.stringify(bodyParams));
+    return;
+  }
+  response.statusCode = 400;
+  response.end();
 };
 
 const getAllComments = (comments) => {
@@ -45,7 +50,7 @@ const guestBookHandler = (guestBookSrc, guestBookTemplate) => {
   const comments = storeComments(guestBookSrc);
 
   return (request, response, next) => {
-    if (request.matches('POST', '/comment')) {
+    if (request.matches('POST', '/guest-book')) {
       request.storeComments = comments;
       addComment(request, response);
       return;

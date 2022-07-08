@@ -44,7 +44,7 @@ const loginHandler = (sessions, users) => {
     if (req.method === 'POST' && pathname === '/login') {
       if (isvalidUser(username, password, users)) {
         createSession(req, res, sessions);
-        redirectTo(res, 'guest-book');
+        redirectTo(res, '/guest-book');
         return;
       }
       redirectTo(res, '/login');
