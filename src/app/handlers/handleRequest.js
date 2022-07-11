@@ -22,7 +22,7 @@ const addComment = ({ comments, bodyParams, storeComments }, response) => {
     comments.unshift(bodyParams);
     storeComments(comments);
     response.statusCode = 200;
-    response.end(JSON.stringify(bodyParams));
+    response.end();
     return;
   }
   response.statusCode = 400;

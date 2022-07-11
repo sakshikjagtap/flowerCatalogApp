@@ -1,17 +1,25 @@
-const createCommentHTML = (response) => {
+const createHTML = (response) => {
   const comments = document.getElementById('comments');
-  const li = document.createElement('li');
-  const { name, comment, date } = JSON.parse(response);
-  li.innerText = `${date} ${name} : ${comment}`;
-  comments.prepend(li);
+  const commentsHTML = response.map(({ name, comment, date }) => {
+    const li = document.createElement('li');
+    li.innerText = `${date} ${name} : ${comment}`;
+    return li;
+  });
+  comments.innerHTML = '';
+  comments.append(...commentsHTML);
+};
+
+const displayComments = () => {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', '/api/comment');
+  xhr.onload = () => { createHTML(JSON.parse(xhr.response)) };
+  xhr.send();
 }
 
-const displayResponse = (xhr) => {
+const postComment = (xhr) => {
   if (xhr.status === 200) {
-    createCommentHTML(xhr.response);
-  }
-  if (xhr.status === 400) {
-    alert('cannot add comment...!')
+    displayComments();
+    return;
   }
 };
 
@@ -19,7 +27,7 @@ const addComment = () => {
   const formData = collectData();
   const xhr = new XMLHttpRequest();
   xhr.open('POST', '/guest-book');
-  xhr.onload = () => displayResponse(xhr);
+  xhr.onload = () => postComment(xhr);
   xhr.send(formData);
 };
 

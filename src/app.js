@@ -13,7 +13,7 @@ const { injectSession } = require('./app/handlers/injectSession.js');
 const guestBookSrc = 'comment.json';
 const guestBook = 'src/app/guest-book.html';
 const sessions = {};
-const users = {};
+const users = { 'sakshi': { username: 'abc', password: 'a' } };
 
 const handlers = [loadResources(guestBookSrc), injectCookies, injectBodyParams, injectSession, loginHandler(sessions, users), signupHandler(users), logoutHandler(sessions), guestBookHandler(guestBookSrc, guestBook), apiHandler, serveFileContent, notFound];
 
