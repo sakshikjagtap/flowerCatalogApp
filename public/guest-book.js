@@ -1,4 +1,5 @@
-const createHTML = (response) => {
+const createHTML = (xhr) => {
+  const response = JSON.parse(xhr.response);
   const comments = document.getElementById('comments');
   const commentsHTML = response.map(({ name, comment, date }) => {
     const li = document.createElement('li');
@@ -9,26 +10,26 @@ const createHTML = (response) => {
   comments.append(...commentsHTML);
 };
 
-const displayComments = () => {
+const makeXhrRequest = (method, path, cb, body = '') => {
   const xhr = new XMLHttpRequest();
-  xhr.open('GET', '/api/comment');
-  xhr.onload = () => { createHTML(JSON.parse(xhr.response)) };
-  xhr.send();
-}
+  xhr.open(method, path);
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      cb(xhr);
+      return;
+    }
+    console.log('cannot add comment..!');
+  };
+  xhr.send(body);
+};
 
-const postComment = (xhr) => {
-  if (xhr.status === 200) {
-    displayComments();
-    return;
-  }
+const postComment = () => {
+  makeXhrRequest('GET', '/api/comment', createHTML);
 };
 
 const addComment = () => {
   const formData = collectData();
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', '/guest-book');
-  xhr.onload = () => postComment(xhr);
-  xhr.send(formData);
+  makeXhrRequest('POST', '/guest-book', postComment, formData);
 };
 
 const collectData = () => {

@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const redirectTo = (res, location) => {
   res.statusCode = 302;
   res.setHeader('location', location);
