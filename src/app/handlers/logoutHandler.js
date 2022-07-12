@@ -1,9 +1,13 @@
 const logoutHandler = (sessions) => {
   return (req, res, next) => {
     const { pathname } = req.url;
-    const { sessionId } = req.session;
 
     if (pathname === '/logout') {
+      if (!req.session) {
+        return;
+      }
+
+      const { sessionId } = req.session;
       delete sessions[sessionId];
       res.setHeader('Set-Cookie', 'sessionId=0;Max-Age=0');
       res.statusCode = 302;

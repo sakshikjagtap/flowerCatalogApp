@@ -1,9 +1,9 @@
 const createHTML = (xhr) => {
   const response = JSON.parse(xhr.response);
   const comments = document.getElementById('comments');
-  const commentsHTML = response.map(({ name, comment, date }) => {
+  const commentsHTML = response.map(({ username, comment, date }) => {
     const li = document.createElement('li');
-    li.innerText = `${date} ${name} : ${comment}`;
+    li.innerText = `${date} ${username} : ${comment}`;
     return li;
   });
   comments.innerHTML = '';

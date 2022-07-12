@@ -1,7 +1,7 @@
-const injectSession = (req, res, next) => {
-  const sessionId = req.cookies;
+const injectSession = (sessions) => (req, res, next) => {
+  const { sessionId } = req.cookies;
   if (sessionId) {
-    req.session = sessionId;
+    req.session = sessions[sessionId];
   }
   next();
   return;

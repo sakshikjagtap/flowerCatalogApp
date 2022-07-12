@@ -4,8 +4,8 @@ const generateTag = (tag, content) => {
   return `<${tag}>${content}</${tag}>`
 }
 
-const formatComment = ({ name, date, comment }) => {
-  return generateTag('li', `${date} ${name} : ${comment}`);
+const formatComment = ({ username, date, comment }) => {
+  return generateTag('li', `${date} ${username} : ${comment}`);
 };
 
 const storeComments = (fileName) => {
@@ -15,9 +15,12 @@ const storeComments = (fileName) => {
   }
 };
 
-const addComment = ({ comments, bodyParams, storeComments }, response) => {
-  const { name, comment } = bodyParams
-  if (name && comment) {
+const addComment = (request, response) => {
+  const { comments, bodyParams, storeComments } = request;
+  const { comment } = bodyParams;
+  const { username } = request.session;
+  if (username && comment) {
+    bodyParams.username = username;
     bodyParams.date = new Date().toLocaleString();
     comments.unshift(bodyParams);
     storeComments(comments);

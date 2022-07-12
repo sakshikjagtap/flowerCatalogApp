@@ -15,6 +15,6 @@ const guestBook = 'src/app/guest-book.html';
 const sessions = {};
 const users = { 'sakshi': { username: 'abc', password: 'a' } };
 
-const handlers = [loadResources(guestBookSrc), injectCookies, injectBodyParams, injectSession, loginHandler(sessions, users), signupHandler(users), logoutHandler(sessions), guestBookHandler(guestBookSrc, guestBook), apiHandler, serveFileContent, notFound];
+const handlers = [loadResources(guestBookSrc), injectCookies, injectBodyParams, injectSession(sessions), loginHandler(sessions, users), signupHandler(users), logoutHandler(sessions), guestBookHandler(guestBookSrc, guestBook), apiHandler, serveFileContent, notFound];
 
 module.exports = { handlers };

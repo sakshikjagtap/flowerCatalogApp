@@ -29,17 +29,16 @@ const createSession = (req, res, sessions) => {
 const loginHandler = (sessions, users) => {
   return (req, res, next) => {
     const { pathname } = req.url;
-    const { cookie } = req.headers;
 
     if (pathname === '/guest-book') {
-      if (!cookie && req.method === 'GET') {
+      if (req.method === 'GET' && !req.session) {
         redirectTo(res, '/login.html');
         return;
       }
     }
 
-    const { username, password } = req.bodyParams;
     if (req.method === 'POST' && pathname === '/login') {
+      const { username, password } = req.bodyParams;
       if (isvalidUser(username, password, users)) {
         createSession(req, res, sessions);
         redirectTo(res, '/guest-book');
