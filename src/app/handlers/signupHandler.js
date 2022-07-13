@@ -2,10 +2,21 @@ const { redirectTo } = require('./loginHandler');
 
 const addUser = (req, res, users) => {
   const { username, password } = req.bodyParams;
-  if (!username && !password) {
+
+  if (users[username]) {
+    res.statusCode = 409;
+    res.end();
     return;
   }
+
+  // if (!username && !password) {
+  //   res.end('Please enter username and password');
+  //   return;
+  // }
+
+  res.statusCode = 200;
   users[username] = { username, password };
+  res.end();
   return;
 };
 
@@ -19,7 +30,6 @@ const signupHandler = (users) => {
 
     if (req.matches('POST', '/signup')) {
       addUser(req, res, users);
-      redirectTo(res, '/guest-book');
       return;
     }
     next();

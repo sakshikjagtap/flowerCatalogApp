@@ -51,7 +51,7 @@ const collectData = () => {
 const main = () => {
   const button = document.querySelector('#submit');
   button.addEventListener('click', addComment);
-  setInterval(() => makeXhrRequest('GET', '/api/comment', createHTML), 1000);
+  // setInterval(() => makeXhrRequest('GET', '/api/comment', createHTML), 1000);
 };
 
 window.onload = main;
