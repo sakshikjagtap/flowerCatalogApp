@@ -1,7 +1,5 @@
-const fs = require('fs');
-
-const loadResources = (guestBookSrc) => {
-  const comments = JSON.parse(fs.readFileSync(guestBookSrc, 'utf-8'));
+const loadResources = (guestBookSrc, read) => {
+  const comments = JSON.parse(read(guestBookSrc));
   return (request, response, next) => {
     request.comments = comments;
     next();

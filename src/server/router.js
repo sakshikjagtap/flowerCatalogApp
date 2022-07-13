@@ -1,3 +1,8 @@
+const matches = function (method, path) {
+  return this.method === method && this.url.pathname === path;
+};
+
+
 const createNext = handlers => {
   let index = -1;
   const callNextHandler = (req, res) => {
@@ -12,6 +17,9 @@ const createNext = handlers => {
 
 const createRouter = (handlers) => {
   return (req, res) => {
+    const url = new URL(`http://${req.headers.host}${req.url}`);
+    req.url = url;
+    req.matches = matches.bind(req);
     const next = createNext(handlers);
     next(req, res);
   };

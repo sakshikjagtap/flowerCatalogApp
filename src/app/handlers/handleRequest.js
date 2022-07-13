@@ -1,5 +1,3 @@
-const fs = require("fs");
-
 const generateTag = (tag, content, id) => {
   return `<${tag} id=${id}>${content}</${tag}>`
 }
@@ -8,20 +6,13 @@ const formatComment = ({ username, date, comment, id }) => {
   return generateTag('li', `${date} ${username} : ${comment}`, id);
 };
 
-const storeComments = (fileName) => {
-  return (comments) => {
-    const commentsAsString = JSON.stringify(comments);
-    fs.writeFileSync(fileName, commentsAsString, "utf-8");
-  }
-};
-
 const getCommentId = (comments) => {
   const lastComment = comments[0];
   const id = lastComment ? lastComment.id : 0;
   return id + 1;
 }
 
-const addComment = (request, response) => {
+const addComment = (request, response, guestBookSrc) => {
   const { comments, bodyParams, storeComments } = request;
   const { comment } = bodyParams;
   const { username } = request.session;
@@ -31,9 +22,9 @@ const addComment = (request, response) => {
     bodyParams.username = username;
     bodyParams.date = new Date().toLocaleString();
     comments.unshift(bodyParams);
-    storeComments(comments);
+    storeComments(guestBookSrc, JSON.stringify(comments));
     response.statusCode = 200;
-    response.end();
+    response.end('comment added');
     return;
   }
   response.statusCode = 400;
@@ -56,14 +47,13 @@ const showComments = ({ comments, template }, response) => {
   return;
 };
 
-const guestBookHandler = (guestBookSrc, guestBookTemplate) => {
-  const template = fs.readFileSync(guestBookTemplate, 'utf-8');
-  const comments = storeComments(guestBookSrc);
+const guestBookHandler = (guestBookSrc, guestBookTemplate, write, read) => {
+  const template = read(guestBookTemplate);
 
   return (request, response, next) => {
     if (request.matches('POST', '/guest-book')) {
-      request.storeComments = comments;
-      addComment(request, response);
+      request.storeComments = write;
+      addComment(request, response, guestBookSrc);
       return;
     }
 

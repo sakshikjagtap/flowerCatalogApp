@@ -1,12 +1,11 @@
 const redirectTo = (res, location) => {
   res.statusCode = 302;
   res.setHeader('location', location);
-  res.end();
+  res.end(`Redirected to ${location}`);
 }
 
 const isvalidUser = (username, password, users) => {
   const user = users[username];
-
   if (!user) {
     return false;
   }
