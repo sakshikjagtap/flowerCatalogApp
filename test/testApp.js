@@ -151,4 +151,60 @@ describe('test app', () => {
         .expect('Redirected to /login', done)
     });
   });
+
+  describe('path:/api', () => {
+    it('should send api of flower catalouge', (done) => {
+      const expected = {
+        flowers: 'http://localhost:9999/api/flowers',
+        comment: 'http://localhost:9999/api/comment'
+      };
+
+      request(app(config, fileOperations, details))
+        .get('/api')
+        .expect(200)
+        .expect(JSON.stringify(expected), done)
+    });
+
+    it('should send api of flowers', (done) => {
+      const expected = [
+        {
+          name: 'abeliophyllum', url: 'http://localhost:9999/Abeliophyllum.html'
+        },
+        {
+          name: 'agerantum', url: 'http://localhost:9999/agerantum.html'
+        }
+      ];
+
+      request(app(config, fileOperations, details))
+        .get('/api/flowers')
+        .expect(200)
+        .expect(JSON.stringify(expected), done)
+    });
+
+    it('should send api of flowers', (done) => {
+      const expected = [
+        {
+          name: 'abeliophyllum', url: 'http://localhost:9999/Abeliophyllum.html'
+        },
+        {
+          name: 'agerantum', url: 'http://localhost:9999/agerantum.html'
+        }
+      ];
+
+      request(app(config, fileOperations, details))
+        .get('/api/flowers')
+        .expect(200)
+        .expect(JSON.stringify(expected), done)
+    });
+
+    it('should send api of comments', (done) => {
+      const expected = [];
+
+      request(app(config, fileOperations, details))
+        .get('/api/comment')
+        .expect(200)
+        .expect(JSON.stringify(expected), done)
+    });
+
+  });
 });
