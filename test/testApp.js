@@ -205,6 +205,41 @@ describe('test app', () => {
         .expect(200)
         .expect(JSON.stringify(expected), done)
     });
+  });
 
+  describe('path:/signup', () => {
+
+    it('should redirect to signup.html page ', (done) => {
+      request(app(config, fileOperations, details))
+        .get('/signup')
+        .expect(302)
+        .expect('Redirected to /signup.html', done)
+    });
+
+    it('should send a signup page ', (done) => {
+      const signupPage = fs.readFileSync('./public/signup.html', 'utf-8');
+
+      request(app(config, fileOperations, details))
+        .get('/signup.html')
+        .expect(200)
+        .expect(signupPage, done)
+    });
+
+    it('should send a signup page ', (done) => {
+      const expected = {
+        'abc': { username: 'abc', password: 'a' },
+        'sakshi': { username: 'sakshi', password: 'abc' }
+      }
+
+      request(app(config, fileOperations, details))
+        .post('/signup')
+        .send("username=sakshi&password=abc")
+        .expect(302)
+        .expect('Redirected to /guest-book')
+        .end(() => {
+          done();
+          assert.deepStrictEqual(details.users, expected);
+        })
+    });
   });
 });
