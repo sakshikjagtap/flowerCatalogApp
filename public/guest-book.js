@@ -16,7 +16,6 @@ const createHTML = (xhr) => {
     li.innerText = `${date} ${username} : ${comment}`;
     return li;
   });
-  // comments.innerHTML = '';
   comments.prepend(...commentsHTML);
 };
 

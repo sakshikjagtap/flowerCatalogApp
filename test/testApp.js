@@ -5,13 +5,22 @@ const assert = require('assert');
 
 describe('test app', () => {
   let config = {};
+  let fileOperations = {};
+  let details = {};
 
   beforeEach(() => {
     config = {
       guestBookSrc: '[]',
       guestBook: '__Comments__',
       sessions: {},
+    }
+
+    details = {
       users: { 'abc': { username: 'abc', password: 'a' } },
+      sessions: {}
+    }
+
+    fileOperations = {
       write: (file) => file,
       read: (file) => file
     };
@@ -19,7 +28,7 @@ describe('test app', () => {
 
   describe('path:/invalid', () => {
     it('should return error for invalid path', (done) => {
-      request(app(config))
+      request(app(config, fileOperations, details))
         .get('/invalid')
         .expect(404)
         .expect('Not found', done)
@@ -29,7 +38,7 @@ describe('test app', () => {
   describe('path:/', () => {
     it('should give homepage for GET /', (done) => {
       const homePage = fs.readFileSync('./public/index.html', 'utf-8');
-      request(app(config))
+      request(app(config, fileOperations, details))
         .get('/')
         .expect(200)
         .expect('content-type', 'text/html')
@@ -39,7 +48,7 @@ describe('test app', () => {
 
   describe('path:/guest-book', () => {
     it('should redirect to if cookie is not set', (done) => {
-      request(app(config))
+      request(app(config, fileOperations, details))
         .get('/guest-book')
         .expect(302)
         .expect('location', '/login.html')
@@ -47,7 +56,7 @@ describe('test app', () => {
     });
 
     it('should show guestbook page if session is already set', (done) => {
-      config.sessions = {
+      details.sessions = {
         123: {
           sessionId: 123,
           username: 'abc',
@@ -56,14 +65,15 @@ describe('test app', () => {
       }
 
       const expectedHTML = '';
-      request(app(config))
+      request(app(config, fileOperations, details))
         .get('/guest-book')
+        .expect(200)
         .set('Cookie', ['sessionId=123'])
         .expect(expectedHTML, done)
     });
 
     it('should show guestbook page if session is already set with existing cookies', (done) => {
-      config.sessions = {
+      details.sessions = {
         123: {
           sessionId: 123,
           username: 'abc',
@@ -71,11 +81,12 @@ describe('test app', () => {
         }
       }
       config.guestBookSrc =
-        '[{"comment":"hello","id":1,"username":"abc","date":"13/07/2022, 14:49:18"}]'
+        '[{"comment":"hello","id":1,"username":"abc","date":"13/07/2022, 14:49:18"}]';
 
       const expectedHTML = '<li id=1>13/07/2022, 14:49:18 abc : hello</li>';
-      request(app(config))
+      request(app(config, fileOperations, details))
         .get('/guest-book')
+        .expect(200)
         .set('Cookie', ['sessionId=123'])
         .expect(expectedHTML, done)
     });
@@ -86,18 +97,18 @@ describe('test app', () => {
         actual.push(content);
       };
 
-      config.sessions = {
+      details.sessions = {
         123: {
           sessionId: 123,
           username: 'abc',
           date: new Date().toLocaleString()
         }
       }
-      config.write = write;
+      fileOperations.write = write;
 
       const date = new Date().toLocaleString();
       const expected = [`[{"comment":"hello","id":1,"username":"abc","date":"${date}"}]`];
-      request(app(config))
+      request(app(config, fileOperations, details))
         .post('/guest-book')
         .set('Cookie', ['sessionId=123'])
         .send('comment=hello')
@@ -112,7 +123,7 @@ describe('test app', () => {
   describe('path:/login.html', () => {
     it('should give login page for GET /login.html', (done) => {
       const loginPage = fs.readFileSync('./public/login.html', 'utf-8');
-      request(app(config))
+      request(app(config, fileOperations, details))
         .get('/login.html')
         .expect(200)
         .expect('content-type', 'text/html')
@@ -122,7 +133,7 @@ describe('test app', () => {
 
   describe('path:/login', () => {
     it('should redirect to guest-book if user is valid', (done) => {
-      request(app(config))
+      request(app(config, fileOperations, details))
         .post('/login')
         .send('username=abc&password=a')
         .expect(302)
@@ -132,7 +143,7 @@ describe('test app', () => {
     });
 
     it('should redirect to /login if user is invalid', (done) => {
-      request(app(config))
+      request(app(config, fileOperations, details))
         .post('/login')
         .send('username=abcd&password=a')
         .expect(302)

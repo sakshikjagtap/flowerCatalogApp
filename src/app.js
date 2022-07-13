@@ -11,15 +11,15 @@ const { injectCookies } = require('./app/handlers/parseCookie.js');
 const { injectSession } = require('./app/handlers/injectSession.js');
 const { createRouter } = require('./server/router.js');
 
-const app = (config) => {
-  const handlers = [loadResources(config.guestBookSrc, config.read),
+const app = (config, fileOperations, details) => {
+  const handlers = [loadResources(config.guestBookSrc, fileOperations.read),
     injectCookies,
     injectBodyParams,
-  injectSession(config.sessions),
-  loginHandler(config.sessions, config.users),
-  signupHandler(config.users),
-  logoutHandler(config.sessions),
-  guestBookHandler(config.guestBookSrc, config.guestBook, config.write, config.read),
+  injectSession(details.sessions),
+  loginHandler(details.sessions, details.users),
+  signupHandler(details.users),
+  logoutHandler(details.sessions),
+  guestBookHandler(config.guestBookSrc, config.guestBook, fileOperations.write, fileOperations.read),
     apiHandler,
     serveFileContent,
     notFound];
