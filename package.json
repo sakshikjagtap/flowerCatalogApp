@@ -20,5 +20,9 @@
   "homepage": "https://github.com/sakshikjagtap/flowerCatalogApp#readme",
   "dependencies": {
     "mime-types": "^2.1.35"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "supertest": "^6.2.4"
   }
 }

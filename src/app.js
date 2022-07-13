@@ -9,6 +9,7 @@ const { signupHandler } = require('./app/handlers/signupHandler')
 const { injectBodyParams } = require('./app/handlers/injectBodyParser.js');
 const { injectCookies } = require('./app/handlers/parseCookie.js');
 const { injectSession } = require('./app/handlers/injectSession.js');
+const { createRouter } = require('./server/router.js');
 
 const guestBookSrc = 'comment.json';
 const guestBook = 'src/app/guest-book.html';
@@ -17,4 +18,6 @@ const users = { 'sakshi': { username: 'abc', password: 'a' } };
 
 const handlers = [loadResources(guestBookSrc), injectCookies, injectBodyParams, injectSession(sessions), loginHandler(sessions, users), signupHandler(users), logoutHandler(sessions), guestBookHandler(guestBookSrc, guestBook), apiHandler, serveFileContent, notFound];
 
-module.exports = { handlers };
+const app = createRouter(handlers);
+
+module.exports = { app };

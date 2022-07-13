@@ -1,11 +1,11 @@
 const fs = require("fs");
 
-const generateTag = (tag, content) => {
-  return `<${tag}>${content}</${tag}>`
+const generateTag = (tag, content, id) => {
+  return `<${tag} id=${id}>${content}</${tag}>`
 }
 
-const formatComment = ({ username, date, comment }) => {
-  return generateTag('li', `${date} ${username} : ${comment}`);
+const formatComment = ({ username, date, comment, id }) => {
+  return generateTag('li', `${date} ${username} : ${comment}`, id);
 };
 
 const storeComments = (fileName) => {
@@ -15,11 +15,19 @@ const storeComments = (fileName) => {
   }
 };
 
+const getCommentId = (comments) => {
+  const lastComment = comments[0];
+  const id = lastComment ? lastComment.id : 0;
+  return id + 1;
+}
+
 const addComment = (request, response) => {
   const { comments, bodyParams, storeComments } = request;
   const { comment } = bodyParams;
   const { username } = request.session;
+  const id = getCommentId(comments);
   if (username && comment) {
+    bodyParams.id = id;
     bodyParams.username = username;
     bodyParams.date = new Date().toLocaleString();
     comments.unshift(bodyParams);
