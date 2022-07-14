@@ -13,28 +13,30 @@ const createMessageHtml = (acknowledge) => {
 };
 
 const addUser = (xhr) => {
-  let message = 'Signup successful';
-  if (xhr.status === 409) {
-    message = 'user already exist';
+  let message = 'Invalid credential';
+  if (xhr.status === 200) {
+    message = 'login successful';
+    window.location.href = '/guest-book';
+    return
   }
   createMessageHtml(message);
 };
 
 const collectData = () => {
-  const formElement = document.getElementById('signupForm');
+  const formElement = document.getElementById('loginForm');
   const formData = new FormData(formElement);
   formElement.reset();
   return new URLSearchParams(formData).toString();
 };
 
-const signupUser = () => {
+const loginUser = () => {
   const formData = collectData();
-  makeXhrRequest('POST', '/signup', addUser, formData);
+  makeXhrRequest('POST', '/login', addUser, formData);
 };
 
 const main = () => {
-  const button = document.querySelector('#signup');
-  button.onclick = signupUser;
+  const button = document.querySelector('#login');
+  button.onclick = loginUser;
 };
 
 window.onload = main;

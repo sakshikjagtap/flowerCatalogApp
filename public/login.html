@@ -2,11 +2,11 @@
 
 <head>
   <title>Login</title>
+  <script src="login.js"></script>
 </head>
 
 <body>
-  <form action="login" method="post">
-
+  <form id="loginForm">
     <div>
       <label for="username">Enter username</label>
       <input type="text" name="username" placeholder="Enter username" required>
@@ -15,11 +15,12 @@
       <label for="password">Enter Password</label>
       <input type="password" name="password" placeholder="Enter password" required>
     </div>
-    <div>
-      <input type="submit" value="Login">
-      <a href="/signup">Signup</a>
-    </div>
   </form>
+  <div id="message"></div>
+  <div>
+    <button id="login">Login</button>
+    <a href="/signup">Signup</a>
+  </div>
 </body>
 
 </html>

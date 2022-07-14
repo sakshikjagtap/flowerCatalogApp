@@ -136,19 +136,17 @@ describe('test app', () => {
       request(app(config, fileOperations, details))
         .post('/login')
         .send('username=abc&password=a')
-        .expect(302)
-        .expect('location', '/guest-book')
+        .expect(200)
         .expect('set-cookie', /sessionId=\d+/)
-        .expect('Redirected to /guest-book', done)
+        .expect('login successful', done)
     });
 
     it('should redirect to /login if user is invalid', (done) => {
       request(app(config, fileOperations, details))
         .post('/login')
         .send('username=abcd&password=a')
-        .expect(302)
-        .expect('location', '/login')
-        .expect('Redirected to /login', done)
+        .expect(401)
+        .expect('invalid credential', done)
     });
   });
 
@@ -234,11 +232,11 @@ describe('test app', () => {
       request(app(config, fileOperations, details))
         .post('/signup')
         .send("username=sakshi&password=abc")
-        .expect(302)
-        .expect('Redirected to /guest-book')
-        .end(() => {
-          done();
+        .end((err, res) => {
+          assert.strictEqual(res.statusCode, 200);
+          assert.strictEqual(res.text, 'signup successful');
           assert.deepStrictEqual(details.users, expected);
+          done();
         })
     });
   });

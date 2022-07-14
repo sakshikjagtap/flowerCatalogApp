@@ -40,10 +40,12 @@ const loginHandler = (sessions, users) => {
       const { username, password } = req.bodyParams;
       if (isvalidUser(username, password, users)) {
         createSession(req, res, sessions);
-        redirectTo(res, '/guest-book');
+        res.statusCode = 200;
+        res.end('login successful');
         return;
       }
-      redirectTo(res, '/login');
+      res.statusCode = 401;
+      res.end('invalid credential');
       return;
     }
     next();

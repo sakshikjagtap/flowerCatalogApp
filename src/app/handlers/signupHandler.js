@@ -5,18 +5,13 @@ const addUser = (req, res, users) => {
 
   if (users[username]) {
     res.statusCode = 409;
-    res.end();
+    res.end('already exist');
     return;
   }
 
-  // if (!username && !password) {
-  //   res.end('Please enter username and password');
-  //   return;
-  // }
-
   res.statusCode = 200;
   users[username] = { username, password };
-  res.end();
+  res.end('signup successful');
   return;
 };
 
