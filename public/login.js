@@ -15,7 +15,6 @@ const createMessageHtml = (acknowledge) => {
 const addUser = (xhr) => {
   let message = 'Invalid credential';
   if (xhr.status === 200) {
-    message = 'login successful';
     window.location.href = '/guest-book';
     return
   }
@@ -26,7 +25,7 @@ const collectData = () => {
   const formElement = document.getElementById('loginForm');
   const formData = new FormData(formElement);
   formElement.reset();
-  return new URLSearchParams(formData).toString();
+  return new URLSearchParams(formData);
 };
 
 const loginUser = () => {

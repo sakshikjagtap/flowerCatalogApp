@@ -1,5 +1,5 @@
 const getApi = (request, response) => {
-  const { pathname } = request.url;
+  const { url: pathname } = request;
 
   if (pathname === '/api') {
     const flowerCatalog = {
@@ -11,8 +11,9 @@ const getApi = (request, response) => {
   }
 
   if (pathname === '/api/comment') {
+    response.statusCode = 200;
     response.end(JSON.stringify(request.comments));
-    return true;
+    return;
   }
 
   if (pathname === '/api/flowers') {
@@ -26,13 +27,13 @@ const getApi = (request, response) => {
     ];
 
     response.end(JSON.stringify(flowers));
-    return true;
+    return;
   }
 };
 
 
 const apiHandler = (request, response, next) => {
-  const { pathname } = request.url;
+  const { url: pathname } = request;
   if (request.method === 'GET' && pathname.startsWith('/api')) {
     return getApi(request, response);
   }

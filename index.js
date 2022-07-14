@@ -1,6 +1,5 @@
 const fs = require("fs");
-const { startServer } = require('./src/server/server.js');
-const { app } = require('./src/app.js');
+const { createApp } = require('./src/app.js');
 
 const write = (fileName, content) => {
   fs.writeFileSync(fileName, content, "utf-8");
@@ -22,4 +21,9 @@ const fileOperations = {
   read: read
 };
 
-startServer(9999, app(config, fileOperations, details));
+const app = createApp(config, fileOperations, details);
+const port = 9999;
+
+app.listen(port, () => () => {
+  console.log(`listening on port ${port}`)
+});

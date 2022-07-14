@@ -6,7 +6,7 @@ const getLastCommentId = () => {
 }
 
 const createHTML = (xhr) => {
-  const response = JSON.parse(xhr.response);
+  const response = JSON.parse(xhr.currentTarget.response);
   const comments = document.getElementById('comments');
   const lastCommentId = getLastCommentId();
   const newComments = response.filter(({ id }) => id > lastCommentId);
@@ -22,8 +22,8 @@ const createHTML = (xhr) => {
 const makeXhrRequest = (method, path, cb, body = '') => {
   const xhr = new XMLHttpRequest();
   xhr.open(method, path);
-  xhr.onload = () => {
-    if (xhr.status === 200) {
+  xhr.onload = (xhr) => {
+    if (xhr.currentTarget.status === 200) {
       cb(xhr);
       return;
     }
@@ -33,6 +33,7 @@ const makeXhrRequest = (method, path, cb, body = '') => {
 };
 
 const postComment = () => {
+  console.log('inside post');
   makeXhrRequest('GET', '/api/comment', createHTML);
 };
 

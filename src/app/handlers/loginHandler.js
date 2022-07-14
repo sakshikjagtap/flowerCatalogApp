@@ -27,8 +27,7 @@ const createSession = (req, res, sessions) => {
 
 const loginHandler = (sessions, users) => {
   return (req, res, next) => {
-    const { pathname } = req.url;
-
+    const { url: pathname } = req;
     if (pathname === '/guest-book') {
       if (req.method === 'GET' && !req.session) {
         redirectTo(res, '/login.html');

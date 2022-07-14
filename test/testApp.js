@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { app } = require('../src/app');
+const { createApp } = require('../src/app');
 const fs = require('fs');
 const assert = require('assert');
 
@@ -28,27 +28,27 @@ describe('test app', () => {
 
   describe('path:/invalid', () => {
     it('should return error for invalid path', (done) => {
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/invalid')
-        .expect(404)
-        .expect('Not found', done)
+        .expect(404, done)
+      // .expect('Not found', done)
     });
   });
 
   describe('path:/', () => {
     it('should give homepage for GET /', (done) => {
       const homePage = fs.readFileSync('./public/index.html', 'utf-8');
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/')
         .expect(200)
-        .expect('content-type', 'text/html')
+        .expect('content-type', 'text/html; charset=UTF-8')
         .expect(homePage, done)
     });
   });
 
   describe('path:/guest-book', () => {
     it('should redirect to if cookie is not set', (done) => {
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/guest-book')
         .expect(302)
         .expect('location', '/login.html')
@@ -65,7 +65,7 @@ describe('test app', () => {
       }
 
       const expectedHTML = '';
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/guest-book')
         .expect(200)
         .set('Cookie', ['sessionId=123'])
@@ -84,7 +84,7 @@ describe('test app', () => {
         '[{"comment":"hello","id":1,"username":"abc","date":"13/07/2022, 14:49:18"}]';
 
       const expectedHTML = '<li id=1>13/07/2022, 14:49:18 abc : hello</li>';
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/guest-book')
         .expect(200)
         .set('Cookie', ['sessionId=123'])
@@ -108,7 +108,7 @@ describe('test app', () => {
 
       const date = new Date().toLocaleString();
       const expected = [`[{"comment":"hello","id":1,"username":"abc","date":"${date}"}]`];
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .post('/guest-book')
         .set('Cookie', ['sessionId=123'])
         .send('comment=hello')
@@ -123,17 +123,17 @@ describe('test app', () => {
   describe('path:/login.html', () => {
     it('should give login page for GET /login.html', (done) => {
       const loginPage = fs.readFileSync('./public/login.html', 'utf-8');
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/login.html')
         .expect(200)
-        .expect('content-type', 'text/html')
+        .expect('content-type', 'text/html; charset=UTF-8')
         .expect(loginPage, done)
     });
   });
 
   describe('path:/login', () => {
     it('should redirect to guest-book if user is valid', (done) => {
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .post('/login')
         .send('username=abc&password=a')
         .expect(200)
@@ -142,7 +142,7 @@ describe('test app', () => {
     });
 
     it('should redirect to /login if user is invalid', (done) => {
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .post('/login')
         .send('username=abcd&password=a')
         .expect(401)
@@ -157,7 +157,7 @@ describe('test app', () => {
         comment: 'http://localhost:9999/api/comment'
       };
 
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/api')
         .expect(200)
         .expect(JSON.stringify(expected), done)
@@ -173,7 +173,7 @@ describe('test app', () => {
         }
       ];
 
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/api/flowers')
         .expect(200)
         .expect(JSON.stringify(expected), done)
@@ -189,7 +189,7 @@ describe('test app', () => {
         }
       ];
 
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/api/flowers')
         .expect(200)
         .expect(JSON.stringify(expected), done)
@@ -197,8 +197,7 @@ describe('test app', () => {
 
     it('should send api of comments', (done) => {
       const expected = [];
-
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/api/comment')
         .expect(200)
         .expect(JSON.stringify(expected), done)
@@ -207,34 +206,50 @@ describe('test app', () => {
 
   describe('path:/signup', () => {
 
-    it('should redirect to signup.html page ', (done) => {
-      request(app(config, fileOperations, details))
+    it('should redirect to signup.html page', (done) => {
+      request(createApp(config, fileOperations, details))
         .get('/signup')
         .expect(302)
         .expect('Redirected to /signup.html', done)
     });
 
-    it('should send a signup page ', (done) => {
+    it('should show a signup page ', (done) => {
       const signupPage = fs.readFileSync('./public/signup.html', 'utf-8');
 
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .get('/signup.html')
         .expect(200)
         .expect(signupPage, done)
     });
 
-    it('should send a signup page ', (done) => {
+    it('should add a user', (done) => {
       const expected = {
         'abc': { username: 'abc', password: 'a' },
         'sakshi': { username: 'sakshi', password: 'abc' }
       }
 
-      request(app(config, fileOperations, details))
+      request(createApp(config, fileOperations, details))
         .post('/signup')
         .send("username=sakshi&password=abc")
         .end((err, res) => {
           assert.strictEqual(res.statusCode, 200);
           assert.strictEqual(res.text, 'signup successful');
+          assert.deepStrictEqual(details.users, expected);
+          done();
+        })
+    });
+
+    it('should give user already exist message', (done) => {
+      const expected = {
+        'abc': { username: 'abc', password: 'a' },
+      }
+
+      request(createApp(config, fileOperations, details))
+        .post('/signup')
+        .send("username=abc&password=a")
+        .end((err, res) => {
+          assert.strictEqual(res.statusCode, 409);
+          assert.strictEqual(res.text, 'already exist');
           assert.deepStrictEqual(details.users, expected);
           done();
         })

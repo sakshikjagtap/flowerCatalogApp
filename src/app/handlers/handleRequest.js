@@ -51,13 +51,13 @@ const guestBookHandler = (guestBookSrc, guestBookTemplate, write, read) => {
   const template = read(guestBookTemplate);
 
   return (request, response, next) => {
-    if (request.matches('POST', '/guest-book')) {
+    if (request.method === 'POST' && request.url === '/guest-book') {
       request.storeComments = write;
       addComment(request, response, guestBookSrc);
       return;
     }
 
-    if (request.matches('GET', '/guest-book')) {
+    if (request.method === 'GET' && request.url === '/guest-book') {
       request.template = template;
       return showComments(request, response);
     }

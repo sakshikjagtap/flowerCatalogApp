@@ -17,13 +17,12 @@ const addUser = (req, res, users) => {
 
 const signupHandler = (users) => {
   return (req, res, next) => {
-
-    if (req.matches('GET', '/signup')) {
+    if (req.method === 'GET' && req.url === '/signup') {
       redirectTo(res, '/signup.html')
       return;
     }
 
-    if (req.matches('POST', '/signup')) {
+    if (req.method === 'POST' && req.url === '/signup') {
       addUser(req, res, users);
       return;
     }

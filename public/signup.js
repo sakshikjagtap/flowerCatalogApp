@@ -24,7 +24,7 @@ const collectData = () => {
   const formElement = document.getElementById('signupForm');
   const formData = new FormData(formElement);
   formElement.reset();
-  return new URLSearchParams(formData).toString();
+  return new URLSearchParams(formData);
 };
 
 const signupUser = () => {
