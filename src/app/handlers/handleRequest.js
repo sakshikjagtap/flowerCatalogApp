@@ -23,11 +23,11 @@ const addComment = (request, response, guestBookSrc) => {
     bodyParams.date = new Date().toLocaleString();
     comments.unshift(bodyParams);
     storeComments(guestBookSrc, JSON.stringify(comments));
-    response.statusCode = 200;
+    response.status(200);
     response.end('comment added');
     return;
   }
-  response.statusCode = 400;
+  response.status(400);
   response.end();
 };
 
@@ -42,7 +42,7 @@ const getAllComments = (comments) => {
 const showComments = ({ comments, template }, response) => {
   const commentString = getAllComments(comments);
   content = template.replace('__Comments__', commentString);
-  response.setHeader('content-type', 'text/html');
+  response.type('html');
   response.end(content);
   return;
 };

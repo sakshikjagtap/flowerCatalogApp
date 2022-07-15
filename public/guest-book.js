@@ -1,6 +1,5 @@
 const getLastCommentId = () => {
   const lastComment = document.querySelector('#comments :nth-child(1)');
-  console.log(lastComment);
   const id = lastComment ? lastComment.id : 0;
   return id;
 }
@@ -33,7 +32,6 @@ const makeXhrRequest = (method, path, cb, body = '') => {
 };
 
 const postComment = () => {
-  console.log('inside post');
   makeXhrRequest('GET', '/api/comment', createHTML);
 };
 

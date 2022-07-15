@@ -47,12 +47,11 @@ describe('test app', () => {
   });
 
   describe('path:/guest-book', () => {
-    it('should redirect to if cookie is not set', (done) => {
+    it('should redirect to login if cookie is not set', (done) => {
       request(createApp(config, fileOperations, details))
         .get('/guest-book')
         .expect(302)
-        .expect('location', '/login.html')
-        .expect('Redirected to /login.html', done)
+        .expect('location', '/login.html', done);
     });
 
     it('should show guestbook page if session is already set', (done) => {
@@ -178,22 +177,6 @@ describe('test app', () => {
         .expect(JSON.stringify(expected), done)
     });
 
-    it('should send api of flowers', (done) => {
-      const expected = [
-        {
-          name: 'abeliophyllum', url: 'http://localhost:9999/Abeliophyllum.html'
-        },
-        {
-          name: 'agerantum', url: 'http://localhost:9999/agerantum.html'
-        }
-      ];
-
-      request(createApp(config, fileOperations, details))
-        .get('/api/flowers')
-        .expect(200)
-        .expect(JSON.stringify(expected), done)
-    });
-
     it('should send api of comments', (done) => {
       const expected = [];
       request(createApp(config, fileOperations, details))
@@ -208,8 +191,7 @@ describe('test app', () => {
     it('should redirect to signup.html page', (done) => {
       request(createApp(config, fileOperations, details))
         .get('/signup')
-        .expect(302)
-        .expect('Redirected to /signup.html', done)
+        .expect(302, done);
     });
 
     it('should show a signup page ', (done) => {

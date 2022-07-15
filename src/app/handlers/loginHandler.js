@@ -1,9 +1,3 @@
-const redirectTo = (res, location) => {
-  res.statusCode = 302;
-  res.setHeader('location', location);
-  res.end(`Redirected to ${location}`);
-}
-
 const isvalidUser = (username, password, users) => {
   const user = users[username];
   if (!user) {
@@ -19,16 +13,15 @@ const isvalidUser = (username, password, users) => {
 const createSession = (req, res, sessions) => {
   const date = new Date();
   const sessionId = date.getTime();
-  res.setHeader('set-cookie', `sessionId=${sessionId}`);
+  res.cookie('sessionId', sessionId);
   const { username } = req.bodyParams;
   sessions[sessionId] = { sessionId, date: date.toLocaleString, username };
 };
 
-const showLoginPage = () => {
+const validateUser = () => {
   return (req, res, next) => {
     if (!req.session) {
-      console.log('hello');
-      redirectTo(res, '/login.html');
+      res.redirect('/login.html');
       return;
     };
     next();
@@ -40,7 +33,7 @@ const loginHandler = (sessions, users) => {
     const { username, password } = req.bodyParams;
     if (isvalidUser(username, password, users)) {
       createSession(req, res, sessions);
-      res.statusCode = 200;
+      res.status(200);
       res.end('login successful');
       return;
     }
@@ -48,4 +41,4 @@ const loginHandler = (sessions, users) => {
   };
 };
 
-module.exports = { loginHandler, redirectTo, showLoginPage };
+module.exports = { loginHandler, validateUser };
