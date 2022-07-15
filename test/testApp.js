@@ -145,8 +145,7 @@ describe('test app', () => {
       request(createApp(config, fileOperations, details))
         .post('/login')
         .send('username=abcd&password=a')
-        .expect(401)
-        .expect('invalid credential', done)
+        .expect(404, done)
     });
   });
 

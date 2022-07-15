@@ -47,22 +47,22 @@ const showComments = ({ comments, template }, response) => {
   return;
 };
 
-const guestBookHandler = (guestBookSrc, guestBookTemplate, write, read) => {
+const postComment = (guestBookSrc, guestBookTemplate, write) => {
+  return (request, response, next) => {
+    request.storeComments = write;
+    addComment(request, response, guestBookSrc);
+    return;
+  };
+
+};
+
+const showGuestBook = (guestBookTemplate, read) => {
   const template = read(guestBookTemplate);
 
   return (request, response, next) => {
-    if (request.method === 'POST' && request.url === '/guest-book') {
-      request.storeComments = write;
-      addComment(request, response, guestBookSrc);
-      return;
-    }
-
-    if (request.method === 'GET' && request.url === '/guest-book') {
-      request.template = template;
-      return showComments(request, response);
-    }
-    next();
-  };
+    request.template = template;
+    return showComments(request, response);
+  }
 };
 
-module.exports = { guestBookHandler };
+module.exports = { showGuestBook, postComment };

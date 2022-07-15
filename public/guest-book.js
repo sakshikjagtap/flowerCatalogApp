@@ -46,7 +46,7 @@ const collectData = () => {
   const formElement = document.getElementById('form');
   const formData = new FormData(formElement);
   formElement.reset();
-  return new URLSearchParams(formData).toString();
+  return new URLSearchParams(formData);
 };
 
 const main = () => {

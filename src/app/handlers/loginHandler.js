@@ -24,31 +24,28 @@ const createSession = (req, res, sessions) => {
   sessions[sessionId] = { sessionId, date: date.toLocaleString, username };
 };
 
+const showLoginPage = () => {
+  return (req, res, next) => {
+    if (!req.session) {
+      console.log('hello');
+      redirectTo(res, '/login.html');
+      return;
+    };
+    next();
+  };
+}
 
 const loginHandler = (sessions, users) => {
   return (req, res, next) => {
-    const { url: pathname } = req;
-    if (pathname === '/guest-book') {
-      if (req.method === 'GET' && !req.session) {
-        redirectTo(res, '/login.html');
-        return;
-      }
-    }
-
-    if (req.method === 'POST' && pathname === '/login') {
-      const { username, password } = req.bodyParams;
-      if (isvalidUser(username, password, users)) {
-        createSession(req, res, sessions);
-        res.statusCode = 200;
-        res.end('login successful');
-        return;
-      }
-      res.statusCode = 401;
-      res.end('invalid credential');
+    const { username, password } = req.bodyParams;
+    if (isvalidUser(username, password, users)) {
+      createSession(req, res, sessions);
+      res.statusCode = 200;
+      res.end('login successful');
       return;
     }
     next();
   };
 };
 
-module.exports = { loginHandler, redirectTo };
+module.exports = { loginHandler, redirectTo, showLoginPage };

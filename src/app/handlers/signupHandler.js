@@ -15,19 +15,18 @@ const addUser = (req, res, users) => {
   return;
 };
 
+const showSignupPage = (users) => {
+  return (req, res, next) => {
+    redirectTo(res, '/signup.html')
+    return;
+  }
+};
+
 const signupHandler = (users) => {
   return (req, res, next) => {
-    if (req.method === 'GET' && req.url === '/signup') {
-      redirectTo(res, '/signup.html')
-      return;
-    }
-
-    if (req.method === 'POST' && req.url === '/signup') {
-      addUser(req, res, users);
-      return;
-    }
-    next();
+    addUser(req, res, users);
+    return;
   };
 };
 
-module.exports = { signupHandler };
+module.exports = { signupHandler, showSignupPage };
