@@ -21,10 +21,12 @@ const showFlowersApi = (req, res, next) => {
   return;
 };
 
-const showCommentsApi = (req, res, next) => {
-  res.statusCode = 200;
-  res.json(req.comments);
-  return;
+const showCommentsApi = (comments) => {
+  return (req, res, next) => {
+    res.status(200);
+    res.json(comments);
+    return;
+  };
 };
 
 module.exports = { showApi, showFlowersApi, showCommentsApi };

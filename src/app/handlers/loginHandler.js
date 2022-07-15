@@ -18,16 +18,6 @@ const createSession = (req, res, sessions) => {
   sessions[sessionId] = { sessionId, date: date.toLocaleString, username };
 };
 
-const validateUser = () => {
-  return (req, res, next) => {
-    if (!req.session) {
-      res.redirect('/login.html');
-      return;
-    };
-    next();
-  };
-}
-
 const loginHandler = (sessions, users) => {
   return (req, res, next) => {
     const { username, password } = req.bodyParams;
@@ -41,4 +31,4 @@ const loginHandler = (sessions, users) => {
   };
 };
 
-module.exports = { loginHandler, validateUser };
+module.exports = { loginHandler };

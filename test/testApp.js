@@ -31,7 +31,6 @@ describe('test app', () => {
       request(createApp(config, fileOperations, details))
         .get('/invalid')
         .expect(404, done)
-      // .expect('Not found', done)
     });
   });
 

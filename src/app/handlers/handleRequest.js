@@ -1,3 +1,4 @@
+const express = require('express');
 const generateTag = (tag, content, id) => {
   return `<${tag} id=${id}>${content}</${tag}>`
 }
@@ -12,8 +13,8 @@ const getCommentId = (comments) => {
   return id + 1;
 }
 
-const addComment = (request, response, guestBookSrc) => {
-  const { comments, bodyParams, storeComments } = request;
+const addComment = (request, response, guestBookSrc, write) => {
+  const { comments, bodyParams } = request;
   const { comment } = bodyParams;
   const { username } = request.session;
   const id = getCommentId(comments);
@@ -22,7 +23,7 @@ const addComment = (request, response, guestBookSrc) => {
     bodyParams.username = username;
     bodyParams.date = new Date().toLocaleString();
     comments.unshift(bodyParams);
-    storeComments(guestBookSrc, JSON.stringify(comments));
+    write(guestBookSrc, JSON.stringify(comments));
     response.status(200);
     response.end('comment added');
     return;
@@ -39,6 +40,24 @@ const getAllComments = (comments) => {
   return commentsAsString;
 };
 
+
+const validateUser = () => {
+  return (req, res, next) => {
+    if (!req.session) {
+      res.redirect('/login.html');
+      return;
+    };
+    next();
+  };
+}
+
+const loadComments = (comments) => {
+  return (req, res, next) => {
+    req.comments = comments;
+    next();
+  };
+};
+
 const showComments = ({ comments, template }, response) => {
   const commentString = getAllComments(comments);
   content = template.replace('__Comments__', commentString);
@@ -47,13 +66,11 @@ const showComments = ({ comments, template }, response) => {
   return;
 };
 
-const postComment = (guestBookSrc, guestBookTemplate, write) => {
+const postComment = (guestBookSrc, write) => {
   return (request, response, next) => {
-    request.storeComments = write;
-    addComment(request, response, guestBookSrc);
+    addComment(request, response, guestBookSrc, write);
     return;
   };
-
 };
 
 const showGuestBook = (guestBookTemplate, read) => {
@@ -65,4 +82,4 @@ const showGuestBook = (guestBookTemplate, read) => {
   }
 };
 
-module.exports = { showGuestBook, postComment };
+module.exports = { showGuestBook, postComment, loadComments, validateUser };

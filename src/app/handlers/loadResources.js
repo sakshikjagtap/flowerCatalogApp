@@ -1,9 +1,5 @@
-const loadResources = (guestBookSrc, read) => {
-  const comments = JSON.parse(read(guestBookSrc));
-  return (request, response, next) => {
-    request.comments = comments;
-    next();
-  };
+const readComments = (guestBookSrc, read) => {
+  return comments = JSON.parse(read(guestBookSrc));
 };
 
-exports.loadResources = loadResources;
+exports.readComments = readComments;
